@@ -1,0 +1,508 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="mb-4">
+
+        <a href="{% url 'feed_relatorios' %}"
+           class="btn btn-outline-primary rounded-pill">
+
+            ← Voltar
+
+        </a>
+
+    </div>
+
+    <div class="card border-0 shadow rounded-4 overflow-hidden">
+
+        {% if relatorio.imagem %}
+
+        <img src="{{ relatorio.imagem.url }}"
+             class="w-100"
+             style="max-height:500px; object-fit:cover;">
+
+        {% endif %}
+
+        <div class="card-body p-5">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <span class="badge bg-primary rounded-pill px-3 py-2">
+
+                    {{ relatorio.categoria }}
+
+                </span>
+
+                <small class="text-muted">
+
+                    {{ relatorio.criado_em|date:"d/m/Y H:i" }}
+
+                </small>
+
+            </div>
+
+            <h1 class="fw-bold mb-4">
+
+                {{ relatorio.titulo }}
+
+            </h1>
+            <div class="mb-4">
+
+                {% if user == relatorio.autor.usuario or user.is_superuser %}
+
+                    <a href="{% url 'editar_relatorio' relatorio.id %}"
+                    class="btn btn-warning rounded-pill">
+
+                        <i class="bi bi-pencil-fill"></i>
+
+                        Editar
+
+                    </a>
+
+                {% endif %}
+
+                {% if user.is_superuser %}
+
+                    <a href="{% url 'excluir_relatorio' relatorio.id %}"
+                    class="btn btn-danger rounded-pill">
+
+                        <i class="bi bi-trash-fill"></i>
+
+                        Excluir
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+            <div class="mb-4">
+
+                {% for tag in relatorio.tags.all %}
+
+                    <span
+                        class="badge bg-dark rounded-pill me-2">
+
+                        #{{ tag.nome }}
+
+                    </span>
+
+                {% endfor %}
+
+            </div>
+            <hr>
+
+            <div class="row mb-4">
+
+                <div class="col-md-4">
+
+                    <strong>Palavras-chave:</strong><br>
+
+                    {{ relatorio.palavras_chave|default:"—" }}
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <strong>Prioridade:</strong><br>
+
+                    {{ relatorio.prioridade|default:"—" }}
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <strong>Status:</strong><br>
+
+                    {{ relatorio.status|default:"—" }}
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="d-flex align-items-center mb-5">
+
+                {% if relatorio.autor.foto %}
+
+                <img src="{{ relatorio.autor.foto.url }}"
+                     class="rounded-circle me-3"
+                     width="70"
+                     height="70"
+                     style="object-fit:cover;">
+
+                {% else %}
+
+                <i class="bi bi-person-circle text-primary me-3"
+                   style="font-size:60px;"></i>
+
+                {% endif %}
+
+                <div>
+
+                    <h5 class="mb-1">
+
+                        {{ relatorio.autor.usuario.get_full_name }}
+
+                    </h5>
+
+                    <p class="text-muted mb-0">
+
+                        {{ relatorio.autor.cargo }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="mb-5">
+
+                <h3 class="fw-bold mb-3">
+
+                    Problema
+
+                </h3>
+
+                <div class="bg-light rounded-4 p-4">
+
+                    {{ relatorio.problema|linebreaks }}
+
+                </div>
+
+            </div>
+
+            <div class="mb-5">
+
+                <h3 class="fw-bold mb-3">
+
+                    Solução
+
+                </h3>
+
+                <div class="bg-light rounded-4 p-4">
+
+                    {{ relatorio.solucao|linebreaks }}
+
+                </div>
+
+            </div>
+
+            {% if relatorio.resultado_final %}
+
+            <div class="mb-5">
+
+                <h3 class="fw-bold mb-3">
+
+                    Resultado Final
+
+                </h3>
+
+                <div class="bg-light rounded-4 p-4">
+
+                    {{ relatorio.resultado_final|linebreaks }}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+            {% if relatorio.observacoes %}
+
+            <div class="mb-4">
+
+                <h3 class="fw-bold mb-3">
+
+                    Observações
+
+                </h3>
+
+                <div class="bg-light rounded-4 p-4">
+
+                    {{ relatorio.observacoes|linebreaks }}
+
+                </div>
+
+            </div>
+
+            <hr class="my-5">
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+                        <div class="card-body">
+
+                            <h4 class="fw-bold mb-3">
+
+                                Avaliações
+
+                            </h4>
+
+                            <h2 class="text-warning">
+
+                                ⭐
+
+                                {% if media_notas %}
+
+                                    {{ media_notas|floatformat:1 }}/5
+
+                                {% else %}
+
+                                    Sem avaliações
+
+                                {% endif %}
+
+                            </h2>
+
+                            <hr>
+
+                            <div class="d-flex gap-2 mb-4">
+
+                                <form method="POST">
+
+                                    {% csrf_token %}
+
+                                    <input
+                                        type="hidden"
+                                        name="tipo"
+                                        value="util">
+
+                                    <button
+                                        class="btn btn-success rounded-pill"
+                                        type="submit"
+                                        name="curtir">
+
+                                        👍 Útil ({{ curtidas_uteis }})
+
+                                    </button>
+
+                                </form>
+
+                                <form method="POST">
+
+                                    {% csrf_token %}
+
+                                    <input
+                                        type="hidden"
+                                        name="tipo"
+                                        value="nao_ajudou">
+
+                                    <button
+                                        class="btn btn-danger rounded-pill"
+                                        type="submit"
+                                        name="curtir">
+
+                                        👎 Não ajudou ({{ curtidas_nao_ajudou }})
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                            <form method="POST">
+
+                                {% csrf_token %}
+
+                                {{ avaliacao_form.nota }}
+
+                                <button
+                                    type="submit"
+                                    name="avaliar"
+                                    class="btn btn-warning w-100 mt-3 rounded-pill">
+
+                                    Avaliar
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-8">
+
+                    <div class="card border-0 shadow-sm rounded-4">
+
+                        <div class="card-body">
+
+                            <h4 class="fw-bold mb-4">
+
+                                Comentários
+
+                            </h4>
+
+                            <form method="POST">
+
+                                {% csrf_token %}
+
+                                {{ comentario_form.texto }}
+
+                                <button
+                                    type="submit"
+                                    name="comentar"
+                                    class="btn btn-primary mt-3 rounded-pill">
+
+                                    Publicar Comentário
+
+                                </button>
+
+                            </form>
+
+                            <hr>
+
+                            {% for comentario in comentarios %}
+
+                            <div class="mb-4">
+
+                                <div class="d-flex align-items-center mb-2">
+
+                                    {% if comentario.autor.foto %}
+
+                                    <img
+                                        src="{{ comentario.autor.foto.url }}"
+                                        class="rounded-circle me-3"
+                                        width="50"
+                                        height="50"
+                                        style="object-fit:cover;">
+
+                                    {% else %}
+
+                                    <i class="bi bi-person-circle
+                                            fs-1
+                                            text-primary
+                                            me-3"></i>
+
+                                    {% endif %}
+
+                                    <div>
+
+                                        <strong>
+
+                                            {{ comentario.autor.usuario.get_full_name }}
+
+                                        </strong>
+
+                                        <br>
+
+                                        <small class="text-muted">
+
+                                            {{ comentario.criado_em|date:"d/m/Y H:i" }}
+
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="bg-light rounded-4 p-3">
+
+                                    {{ comentario.texto|linebreaks }}
+
+                                </div>
+
+                            </div>
+
+                            {% empty %}
+
+                            <div class="alert alert-secondary rounded-4">
+
+                                Nenhum comentário ainda.
+
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<hr class="my-5">
+
+<div class="card border-0 shadow-sm rounded-4">
+
+    <div class="card-body">
+
+        <h4 class="fw-bold mb-4">
+
+            Problemas Relacionados
+
+        </h4>
+
+        {% for item in relatorios_relacionados %}
+
+        <a href="{% url 'detalhe_relatorio' item.id %}"
+           class="text-decoration-none">
+
+            <div class="border rounded-4 p-3 mb-3">
+
+                <h6 class="fw-bold text-dark">
+
+                    {{ item.titulo }}
+
+                </h6>
+
+                <small class="text-muted">
+
+                    {{ item.categoria }}
+
+                </small>
+
+                <div class="mt-2">
+
+                    {% for tag in item.tags.all %}
+
+                    <span
+                        class="badge bg-secondary">
+
+                        #{{ tag.nome }}
+
+                    </span>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </a>
+
+        {% empty %}
+
+        <div class="alert alert-secondary">
+
+            Nenhum relatório semelhante encontrado.
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{{ relatorio.titulo }}

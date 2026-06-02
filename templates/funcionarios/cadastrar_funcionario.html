@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="mb-5">
+
+        <a href="/" class="btn btn-outline-primary mb-3">
+            ← Voltar
+        </a>
+
+        <h1 class="fw-bold">
+            {{ setor.nome }}
+        </h1>
+
+        <p class="text-muted">
+            {{ setor.descricao }}
+        </p>
+
+    </div>
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body p-5">
+
+                    <div class="text-center mb-5">
+
+                        <i class="bi bi-person-plus-fill"
+                           style="font-size: 60px; color: #0d6efd;">
+                        </i>
+
+                        <h2 class="fw-bold mt-3">
+                            Cadastro de Funcionário
+                        </h2>
+
+                        <p class="text-muted">
+                            Criar usuário e funcionário
+                        </p>
+
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data">
+
+                        {% csrf_token %}
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    Nome
+                                </label>
+                                {{ form.first_name }}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    Sobrenome
+                                </label>
+                                {{ form.last_name }}
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    Usuário
+                                </label>
+                                {{ form.username }}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    Email
+                                </label>
+                                {{ form.email }}
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Senha
+                            </label>
+                            {{ form.password }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Cargo
+                            </label>
+                            {{ form.cargo }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Função
+                            </label>
+                            {{ form.funcao }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Telefone
+                            </label>
+                            {{ form.telefone }}
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    Setor
+                                </label>
+                                {{ form.setor }}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    Permissão do Usuário
+                                </label>
+                                {{ form.grupo }}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    Superior
+                                </label>
+                                {{ form.superior }}
+                            </div>
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary w-100 btn-lg rounded-pill mt-3">
+
+                            Cadastrar Funcionário
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

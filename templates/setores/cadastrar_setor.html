@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+    
+    <div class="mb-5">
+
+        <a href="/" class="btn btn-outline-primary mb-3">
+            ← Voltar
+        </a>
+
+        <h1 class="fw-bold">
+            {{ setor.nome }}
+        </h1>
+
+        <p class="text-muted">
+            {{ setor.descricao }}
+        </p>
+
+    </div>
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body p-5">
+
+                    <div class="text-center mb-5">
+
+                        <i class="bi bi-building-add"
+                           style="font-size: 60px; color: #0d6efd;">
+                        </i>
+
+                        <h2 class="fw-bold mt-3">
+                            Cadastro de Setor
+                        </h2>
+
+                        <p class="text-muted">
+                            Criar novo setor da empresa
+                        </p>
+
+                    </div>
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Nome do Setor
+                            </label>
+
+                            {{ form.nome }}
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Descrição
+                            </label>
+
+                            {{ form.descricao }}
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary w-100 btn-lg rounded-pill">
+
+                            Cadastrar Setor
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

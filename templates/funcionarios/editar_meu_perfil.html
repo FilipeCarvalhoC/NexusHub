@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body p-5">
+
+                    <div class="text-center mb-5">
+
+                        {% if funcionario.foto %}
+
+                        <img src="{{ funcionario.foto.url }}"
+                             class="rounded-circle shadow"
+                             width="130"
+                             height="130"
+                             style="object-fit: cover;">
+
+                        {% else %}
+
+                        <i class="bi bi-person-circle"
+                           style="font-size: 120px; color: #0d6efd;">
+                        </i>
+
+                        {% endif %}
+
+                        <h2 class="fw-bold mt-4">
+                            Editar Meu Perfil
+                        </h2>
+
+                        <p class="text-muted">
+                            Atualize suas informações pessoais
+                        </p>
+
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data">
+
+                        {% csrf_token %}
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Nome
+                                </label>
+
+                                {{ form.first_name }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Sobrenome
+                                </label>
+
+                                {{ form.last_name }}
+
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Email
+                            </label>
+
+                            {{ form.email }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Telefone
+                            </label>
+
+                            {{ form.telefone }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Foto
+                            </label>
+
+                            {{ form.foto }}
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary w-100 btn-lg rounded-pill mt-3">
+
+                            Salvar Alterações
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+    
+    <div class="mb-5">
+
+        <a href="/" class="btn btn-outline-primary mb-3">
+            ← Voltar
+        </a>
+
+        <h1 class="fw-bold">
+            {{ setor.nome }}
+        </h1>
+
+        <p class="text-muted">
+            {{ setor.descricao }}
+        </p>
+
+    </div>
+
+    <div class="card shadow border-0 rounded-4">
+
+        <div class="card-body p-5">
+
+            <h2 class="fw-bold mb-4">
+                Editar Setor
+            </h2>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Nome
+                    </label>
+
+                    {{ form.nome }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Descrição
+                    </label>
+
+                    {{ form.descricao }}
+                </div>
+
+                <button type="submit"
+                        class="btn btn-primary rounded-pill">
+
+                    Salvar Alterações
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

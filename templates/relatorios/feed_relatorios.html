@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-5">
+
+        <div>
+
+            <h1 class="fw-bold">
+                Feed de Relatórios
+            </h1>
+
+            <p class="text-muted">
+                Conhecimento compartilhado pela empresa
+            </p>
+
+        </div>
+
+        <a href="{% url 'criar_relatorio' %}"
+           class="btn btn-success rounded-pill">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Novo Relatório
+
+        </a>
+
+    </div>
+
+    <!-- PESQUISA -->
+
+    <div class="row justify-content-center mb-5">
+
+        <div class="col-md-7">
+
+            <form method="GET">
+
+                <div class="input-group shadow-sm">
+
+                    <input type="text"
+                           name="busca"
+                           class="form-control rounded-start-pill"
+                           placeholder="Pesquisar problema, solução ou categoria..."
+                           value="{{ busca }}">
+
+                    <button class="btn btn-primary rounded-end-pill"
+                            type="submit">
+
+                        <i class="bi bi-search"></i>
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- RELATÓRIOS -->
+
+    <div class="row g-4">
+
+        {% for relatorio in relatorios %}
+
+        <div class="col-md-6">
+
+            <a href="{% url 'detalhe_relatorio' relatorio.id %}"
+               class="text-decoration-none text-dark">
+
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                    {% if relatorio.imagem %}
+
+                    <img src="{{ relatorio.imagem.url }}"
+                         class="card-img-top rounded-top-4"
+                         style="height:250px; object-fit:cover;">
+
+                    {% endif %}
+
+                    <div class="card-body p-4">
+
+                        <div class="d-flex justify-content-between mb-3">
+
+                            <span class="badge bg-primary rounded-pill">
+
+                                {{ relatorio.categoria }}
+
+                            </span>
+
+                            <small class="text-muted">
+
+                                {{ relatorio.criado_em|date:"d/m/Y H:i" }}
+
+                            </small>
+
+                        </div>
+
+                        <h3 class="fw-bold mb-3">
+
+                            {{ relatorio.titulo }}
+
+                        </h3>
+
+                        <div class="mb-3">
+
+                            {% for tag in relatorio.tags.all %}
+
+                                <span
+                                    class="badge bg-secondary rounded-pill">
+
+                                    #{{ tag.nome }}
+
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                        <p>
+
+                            <strong>Problema:</strong><br>
+
+                            {{ relatorio.problema|truncatechars:200 }}
+
+                        </p>
+
+                        <p>
+
+                            <strong>Solução:</strong><br>
+
+                            {{ relatorio.solucao|truncatechars:200 }}
+
+                        </p>
+
+                        <hr>
+
+                        <div class="d-flex align-items-center">
+
+                            {% if relatorio.autor.foto %}
+
+                            <img src="{{ relatorio.autor.foto.url }}"
+                                 class="rounded-circle me-3"
+                                 width="50"
+                                 height="50"
+                                 style="object-fit:cover;">
+
+                            {% else %}
+
+                            <i class="bi bi-person-circle fs-1 me-3 text-primary"></i>
+
+                            {% endif %}
+
+                            <div>
+
+                                <strong>
+
+                                    {{ relatorio.autor.usuario.get_full_name }}
+
+                                </strong>
+
+                                <br>
+
+                                <small class="text-muted">
+
+                                    {{ relatorio.autor.cargo }}
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="alert alert-warning rounded-4 shadow-sm">
+
+                Nenhum relatório encontrado.
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+
+        <h1 class="fw-bold">
+
+            Assistente Inteligente
+
+        </h1>
+
+        <p class="text-muted">
+
+            Pergunte algo sobre processos internos.
+
+        </p>
+
+    </div>
+
+    <form method="GET">
+
+        <div class="input-group mb-5">
+
+            <input
+                type="text"
+                name="pergunta"
+                class="form-control form-control-lg"
+
+                placeholder="Ex: Como resolver erro emissão de nota?"
+
+                value="{{ pergunta }}">
+
+            <button
+                class="btn btn-primary">
+
+                Perguntar
+
+            </button>
+
+        </div>
+
+    </form>
+
+    {% if resposta %}
+
+    <div class="card shadow border-0 rounded-4">
+
+        <div class="card-body p-4">
+
+            <h4 class="fw-bold mb-4">
+
+                Conhecimentos encontrados
+
+            </h4>
+
+            {% for item in resposta %}
+
+            <div class="mb-4">
+
+                <h5>
+
+                    {{ item.titulo }}
+
+                </h5>
+
+                <p>
+
+                    {{ item.solucao|truncatechars:250 }}
+
+                </p>
+
+                <a href="{% url 'detalhe_relatorio' item.id %}">
+
+                    Abrir relatório
+
+                </a>
+
+            </div>
+
+            <hr>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

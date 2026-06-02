@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="mb-5">
+
+        <a href="/" class="btn btn-outline-primary mb-3 rounded-pill">
+            ← Voltar
+        </a>
+
+        <h1 class="fw-bold">
+            {{ setor.nome }}
+        </h1>
+
+        <p class="text-muted">
+            {{ setor.descricao }}
+        </p>
+
+    </div>
+
+    <div class="row g-4">
+
+        {% for funcionario in funcionarios %}
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100 position-relative">
+
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+
+                        {% if funcionario.foto %}
+
+                            <img src="{{ funcionario.foto.url }}"
+                                 class="rounded-circle shadow-sm"
+                                 width="120"
+                                 height="120"
+                                 style="object-fit: cover;">
+
+                        {% else %}
+
+                            <i class="bi bi-person-circle"
+                               style="font-size: 90px; color: #0d6efd;">
+                            </i>
+
+                        {% endif %}
+
+                    </div>
+
+                    <h4 class="fw-bold text-center mb-3">
+
+                        {{ funcionario.usuario.get_full_name }}
+
+                    </h4>
+
+                    <hr>
+
+                    <p>
+                        <strong>Cargo:</strong><br>
+                        {{ funcionario.cargo }}
+                    </p>
+
+                    <p>
+                        <strong>Função:</strong><br>
+                        {{ funcionario.funcao }}
+                    </p>
+
+                    <p>
+                        <strong>Email:</strong><br>
+                        {{ funcionario.usuario.email }}
+                    </p>
+
+                    {% if funcionario.superior %}
+
+                    <p>
+                        <strong>Superior:</strong><br>
+                        {{ funcionario.superior.usuario.get_full_name }}
+                    </p>
+
+                    {% endif %}
+
+                    {% if user.is_superuser or user.groups.all.0.name == 'RH' %} 
+
+                    <div class="dropdown position-absolute bottom-0 end-0 m-3">
+
+                        <button class="btn btn-light rounded-circle shadow-sm"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+
+                            <i class="bi bi-three-dots-vertical"></i>
+
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4">
+
+                            <li>
+                                
+                                <a class="dropdown-item"
+
+                                   href="{% url 'editar_funcionario' funcionario.id %}">
+
+                                    <i class="bi bi-pencil-fill me-2 text-warning"></i>
+
+                                    Editar
+
+                                </a>
+                                
+                            </li>
+
+                            <li>
+
+                                <a class="dropdown-item"
+                                   href="{% url 'excluir_funcionario' funcionario.id %}">
+
+                                    <i class="bi bi-trash-fill me-2 text-danger"></i>
+
+                                    Excluir
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="alert alert-warning rounded-4 shadow-sm">
+
+                Nenhum funcionário cadastrado neste setor.
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+ 1 - criar ambiente virtual
+>> python3 -m venv venv
+
+2 - ativar ambiente virtual (Linux)
+>> source venv/bin/activate
+
+2.1 - ativar ambiente virtual (Windows)
+>> .\venv\Script\activate
+
+3 - instalar django
+>> pip install django
+
+3.1 - verificar a instalação do pip
+>> pip freeze
+
+4 - criar projeto
+>> django-admin startproject nome_do_projeto
+
+5 - rodar o servidor
+>> python3 manage.py runserver
+
+6 - mudar a porta do servidor
+>> python3 manage.py runserver 8080
+
+7 - criar aplicação app
+>> python3 manage.py startapp nome_do_app
+
+8 - criação das tabelas no banco de dados e alterações no esquema do bd
+>> python3 manage.py migrate
+
+9 - mudança na estrutura de modelos do app
+>> python3 manage.py makemigrations nome_do_app
+
+10 - comando para verificar problemas no projeto
+>> python3 manage.py check
+
+11 - shell do python
+>> python3 manage.py shell
+
+12 - comando para criar usuário administrador
+>> python3 manage.py createsuperuser
+
+13 - comando para baixar DB-Browser
+>> sudo apt-get update
+>> sudo apt-get install sqlitebrowser

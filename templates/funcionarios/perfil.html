@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+    <div class="mb-5">
+
+        <a href="/" class="btn btn-outline-primary mb-3">
+            ← Voltar
+        </a>
+
+        <h1 class="fw-bold">
+            {{ setor.nome }}
+        </h1>
+
+        <p class="text-muted">
+            {{ setor.descricao }}
+        </p>
+
+    </div>
+    <h1>
+        Meu Perfil
+    </h1>
+
+    <hr>
+
+    <p>
+        <strong>Nome:</strong>
+        {{ funcionario.usuario.get_full_name }}
+    </p>
+
+    <p>
+        <strong>Email:</strong>
+        {{ funcionario.usuario.email }}
+    </p>
+
+    <p>
+        <strong>Cargo:</strong>
+        {{ funcionario.cargo }}
+    </p>
+
+    <a href="{% url 'editar_meu_perfil' %}"
+        class="btn btn-primary rounded-pill mt-4">
+
+            <i class="bi bi-pencil-fill me-2"></i>
+
+            Editar Perfil
+
+    </a>
+
+</div>
+
+{% endblock %}

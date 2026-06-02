@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+
+        <i class="bi bi-diagram-3-fill"
+           style="font-size: 70px; color: #0d6efd;">
+        </i>
+
+        <h1 class="fw-bold mt-3">
+            Organograma Corporativo
+        </h1>
+
+        <p class="text-muted">
+            Estrutura hierárquica da empresa
+        </p>
+
+    </div>
+
+    {% for lider in lideres %}
+
+    <div class="card border-0 shadow rounded-4 mb-5">
+
+        <div class="card-body p-4">
+
+            <div class="text-center mb-4">
+
+                <i class="bi bi-person-workspace"
+                   style="font-size: 60px; color: #0d6efd;">
+                </i>
+
+                <h3 class="fw-bold mt-3">
+
+                    {{ lider.usuario.get_full_name }}
+
+                </h3>
+
+                <p class="text-muted mb-1">
+
+                    {{ lider.cargo }}
+
+                </p>
+
+                <span class="badge bg-primary rounded-pill">
+
+                    {{ lider.setor.nome }}
+
+                </span>
+
+            </div>
+
+            <hr>
+
+            <h5 class="fw-bold mb-4">
+
+                Equipe
+
+            </h5>
+
+            <div class="row g-4">
+
+                {% for funcionario in funcionarios %}
+
+                    {% if funcionario.superior == lider %}
+
+                    <div class="col-md-4">
+
+                        <div class="card border-0 bg-light rounded-4 h-100">
+
+                            <div class="card-body text-center p-4">
+
+                                <i class="bi bi-person-circle"
+                                   style="font-size: 50px; color: #6c757d;">
+                                </i>
+
+                                <h5 class="fw-bold mt-3">
+
+                                    {{ funcionario.usuario.get_full_name }}
+
+                                </h5>
+
+                                <p class="text-muted mb-1">
+
+                                    {{ funcionario.cargo }}
+
+                                </p>
+
+                                <small class="text-secondary">
+
+                                    {{ funcionario.setor.nome }}
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
