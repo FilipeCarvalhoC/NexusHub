@@ -48,49 +48,51 @@
                 {{ relatorio.titulo }}
 
             </h1>
+
             <div class="mb-4">
 
                 {% if user == relatorio.autor.usuario or user.is_superuser %}
 
-                    <a href="{% url 'editar_relatorio' relatorio.id %}"
-                    class="btn btn-warning rounded-pill">
+                <a href="{% url 'editar_relatorio' relatorio.id %}"
+                   class="btn btn-warning rounded-pill">
 
-                        <i class="bi bi-pencil-fill"></i>
+                    <i class="bi bi-pencil-fill"></i>
 
-                        Editar
+                    Editar
 
-                    </a>
+                </a>
 
                 {% endif %}
 
                 {% if user.is_superuser %}
 
-                    <a href="{% url 'excluir_relatorio' relatorio.id %}"
-                    class="btn btn-danger rounded-pill">
+                <a href="{% url 'excluir_relatorio' relatorio.id %}"
+                   class="btn btn-danger rounded-pill">
 
-                        <i class="bi bi-trash-fill"></i>
+                    <i class="bi bi-trash-fill"></i>
 
-                        Excluir
+                    Excluir
 
-                    </a>
+                </a>
 
                 {% endif %}
 
             </div>
+
             <div class="mb-4">
 
                 {% for tag in relatorio.tags.all %}
 
-                    <span
-                        class="badge bg-dark rounded-pill me-2">
+                <span class="badge bg-dark rounded-pill me-2">
 
-                        #{{ tag.nome }}
+                    #{{ tag.nome }}
 
-                    </span>
+                </span>
 
                 {% endfor %}
 
             </div>
+
             <hr>
 
             <div class="row mb-4">
@@ -212,7 +214,7 @@
 
             {% if relatorio.observacoes %}
 
-            <div class="mb-4">
+            <div class="mb-5">
 
                 <h3 class="fw-bold mb-3">
 
@@ -228,208 +230,153 @@
 
             </div>
 
-            <hr class="my-5">
+            {% endif %}
 
-            <div class="row">
+        </div>
 
-                <div class="col-md-4">
+    </div>
 
-                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+    <hr class="my-5">
 
-                        <div class="card-body">
+    <!-- RELATÓRIOS RELACIONADOS -->
 
-                            <h4 class="fw-bold mb-3">
 
-                                Avaliações
+    <div class="card border-0 shadow rounded-4">
 
-                            </h4>
+        <div class="card-body">
 
-                            <h2 class="text-warning">
+            <h4 class="fw-bold mb-4">
 
-                                ⭐
+                🤖 Relatórios Semelhantes
 
-                                {% if media_notas %}
+            </h4>
 
-                                    {{ media_notas|floatformat:1 }}/5
+            {% for item in relatorios_relacionados %}
 
-                                {% else %}
+            <a href="{% url 'detalhe_relatorio' item.id %}"
+            class="text-decoration-none">
 
-                                    Sem avaliações
+                <div class="border rounded-4 p-4 mb-3
+                            hover-shadow">
 
-                                {% endif %}
+                    <div class="d-flex justify-content-between">
 
-                            </h2>
+                        <h5 class="text-dark fw-bold">
 
-                            <hr>
+                            {{ item.titulo }}
 
-                            <div class="d-flex gap-2 mb-4">
+                        </h5>
 
-                                <form method="POST">
+                        <span class="badge bg-success">
 
-                                    {% csrf_token %}
+                            Similar
+                        </span>
 
-                                    <input
-                                        type="hidden"
-                                        name="tipo"
-                                        value="util">
+                    </div>
 
-                                    <button
-                                        class="btn btn-success rounded-pill"
-                                        type="submit"
-                                        name="curtir">
+                    <small class="text-muted">
 
-                                        👍 Útil ({{ curtidas_uteis }})
+                        {{ item.categoria }}
 
-                                    </button>
+                    </small>
 
-                                </form>
+                    <div class="mt-3">
 
-                                <form method="POST">
+                        {% for tag in item.tags.all %}
 
-                                    {% csrf_token %}
+                        <span
+                            class="badge bg-secondary me-2">
 
-                                    <input
-                                        type="hidden"
-                                        name="tipo"
-                                        value="nao_ajudou">
+                            #{{ tag.nome }}
 
-                                    <button
-                                        class="btn btn-danger rounded-pill"
-                                        type="submit"
-                                        name="curtir">
+                        </span>
 
-                                        👎 Não ajudou ({{ curtidas_nao_ajudou }})
-
-                                    </button>
-
-                                </form>
-
-                            </div>
-
-                            <form method="POST">
-
-                                {% csrf_token %}
-
-                                {{ avaliacao_form.nota }}
-
-                                <button
-                                    type="submit"
-                                    name="avaliar"
-                                    class="btn btn-warning w-100 mt-3 rounded-pill">
-
-                                    Avaliar
-
-                                </button>
-
-                            </form>
-
-                        </div>
+                        {% endfor %}
 
                     </div>
 
                 </div>
 
-                <div class="col-md-8">
+            </a>
 
-                    <div class="card border-0 shadow-sm rounded-4">
+            {% empty %}
 
-                        <div class="card-body">
+            <div class="alert alert-secondary">
 
-                            <h4 class="fw-bold mb-4">
-
-                                Comentários
-
-                            </h4>
-
-                            <form method="POST">
-
-                                {% csrf_token %}
-
-                                {{ comentario_form.texto }}
-
-                                <button
-                                    type="submit"
-                                    name="comentar"
-                                    class="btn btn-primary mt-3 rounded-pill">
-
-                                    Publicar Comentário
-
-                                </button>
-
-                            </form>
-
-                            <hr>
-
-                            {% for comentario in comentarios %}
-
-                            <div class="mb-4">
-
-                                <div class="d-flex align-items-center mb-2">
-
-                                    {% if comentario.autor.foto %}
-
-                                    <img
-                                        src="{{ comentario.autor.foto.url }}"
-                                        class="rounded-circle me-3"
-                                        width="50"
-                                        height="50"
-                                        style="object-fit:cover;">
-
-                                    {% else %}
-
-                                    <i class="bi bi-person-circle
-                                            fs-1
-                                            text-primary
-                                            me-3"></i>
-
-                                    {% endif %}
-
-                                    <div>
-
-                                        <strong>
-
-                                            {{ comentario.autor.usuario.get_full_name }}
-
-                                        </strong>
-
-                                        <br>
-
-                                        <small class="text-muted">
-
-                                            {{ comentario.criado_em|date:"d/m/Y H:i" }}
-
-                                        </small>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="bg-light rounded-4 p-3">
-
-                                    {{ comentario.texto|linebreaks }}
-
-                                </div>
-
-                            </div>
-
-                            {% empty %}
-
-                            <div class="alert alert-secondary rounded-4">
-
-                                Nenhum comentário ainda.
-
-                            </div>
-
-                            {% endfor %}
-
-                        </div>
-
-                    </div>
-
-                </div>
+                Nenhum relatório semelhante encontrado.
 
             </div>
 
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <hr class="my-5">
+    <!-- HISTÓRICO -->
+
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-body">
+
+            <h3 class="fw-bold mb-4">
+
+                Histórico de Alterações
+
+            </h3>
+
+            {% if historicos %}
+
+                {% for h in historicos %}
+
+                <div class="border rounded-4 p-4 mb-3">
+
+                    <div class="d-flex justify-content-between">
+
+                        <strong>
+
+                            {{ h.editor.usuario.get_full_name }}
+
+                        </strong>
+
+                        <small class="text-muted">
+
+                            {{ h.atualizado_em|date:"d/m/Y H:i" }}
+
+                        </small>
+
+                    </div>
+
+                    <hr>
+
+                    <p>
+
+                        <strong>Título:</strong>
+
+                        {{ h.titulo }}
+
+                    </p>
+
+                    <p>
+
+                        <strong>Solução antiga:</strong>
+
+                        {{ h.solucao|truncatechars:250 }}
+
+                    </p>
+
+                </div>
+
+                {% endfor %}
+
+            {% else %}
+
+            <div class="alert alert-secondary">
+
+                Nenhuma alteração registrada.
+
+            </div>
 
             {% endif %}
 
@@ -439,70 +386,4 @@
 
 </div>
 
-<hr class="my-5">
-
-<div class="card border-0 shadow-sm rounded-4">
-
-    <div class="card-body">
-
-        <h4 class="fw-bold mb-4">
-
-            Problemas Relacionados
-
-        </h4>
-
-        {% for item in relatorios_relacionados %}
-
-        <a href="{% url 'detalhe_relatorio' item.id %}"
-           class="text-decoration-none">
-
-            <div class="border rounded-4 p-3 mb-3">
-
-                <h6 class="fw-bold text-dark">
-
-                    {{ item.titulo }}
-
-                </h6>
-
-                <small class="text-muted">
-
-                    {{ item.categoria }}
-
-                </small>
-
-                <div class="mt-2">
-
-                    {% for tag in item.tags.all %}
-
-                    <span
-                        class="badge bg-secondary">
-
-                        #{{ tag.nome }}
-
-                    </span>
-
-                    {% endfor %}
-
-                </div>
-
-            </div>
-
-        </a>
-
-        {% empty %}
-
-        <div class="alert alert-secondary">
-
-            Nenhum relatório semelhante encontrado.
-
-        </div>
-
-        {% endfor %}
-
-    </div>
-
-</div>
-
 {% endblock %}
-
-{{ relatorio.titulo }}

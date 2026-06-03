@@ -1,18 +1,20 @@
-from django.shortcuts import ( # type: ignore
+from django.shortcuts import (
     render,
     redirect,
     get_object_or_404
 )
 
-from django.contrib.auth.decorators import login_required # type: ignore
-from django.db.models import (# type: ignore
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
+from django.db.models import (
     Q,
     Avg,
     Case,
     When,
     IntegerField,
     Value
-) 
+)
 
 from funcionarios.models import Funcionario
 
@@ -20,189 +22,8 @@ from .models import (
     Relatorio,
     Comentario,
     Avaliacao,
-    Curtida
-)
-
-from .forms import (
-    RelatorioForm,
-    ComentarioForm,
-    AvaliacaoForm
-)
-from django.contrib import messages # type: ignore
-
-@login_required
-def criar_relatorio(request):
-
-    funcionario = get_object_or_404(
-        Funcionario,
-        usuario=request.user
-    )
-
-    if request.method == 'POST':
-
-        form = RelatorioForm(
-            request.POST,
-            request.FILES
-        )
-
-        if form.is_valid():
-
-            relatorio = form.save(
-                commit=False
-            )
-
-            relatorio.autor = funcionario
-
-            relatorio.save()
-
-            return redirect(
-                'feed_relatorios'
-            )
-
-    else:
-
-        form = RelatorioForm()
-
-    return render(
-
-        request,
-
-        'relatorios/criar_relatorio.html',
-
-        {
-            'form': form
-        }
-
-    )
-
-
-@login_required
-def feed_relatorios(request):
-
-    busca = request.GET.get(
-        'busca'
-    )
-
-    relatorios = Relatorio.objects.select_related(
-        'autor',
-        'autor__usuario'
-    ).order_by(
-        '-criado_em'
-    )
-
-    if busca:
-
-        palavras = busca.split()
-
-        sinonimos = {
-
-            'nota':[
-                'nf',
-                'nfe',
-                'nota fiscal'
-            ],
-
-            'erro':[
-                'falha',
-                'problema'
-            ],
-
-            'login':[
-                'acesso',
-                'senha'
-            ],
-
-            'certificado':[
-
-                'a1',
-                'a3',
-                'token'
-
-            ]
-
-        }
-
-        consulta = Q()
-
-        for palavra in palavras:
-
-            termos = [palavra]
-
-            if palavra.lower() in sinonimos:
-
-                termos.extend(
-
-                    sinonimos[
-                        palavra.lower()
-                    ]
-
-                )
-
-            for termo in termos:
-
-                consulta |= Q(
-                    titulo__icontains=termo
-                )
-
-                consulta |= Q(
-                    categoria__icontains=termo
-                )
-
-                consulta |= Q(
-                    problema__icontains=termo
-                )
-
-                consulta |= Q(
-                    solucao__icontains=termo
-                )
-
-                consulta |= Q(
-                    palavras_chave__icontains=termo
-                )
-
-                consulta |= Q(
-                    tags__nome__icontains=termo
-                )
-
-                consulta |= Q(
-                    autor__usuario__first_name__icontains=termo
-                )
-
-            relatorios = relatorios.filter(
-                consulta
-            ).distinct().order_by(
-                '-criado_em'
-            )
-
-    return render(
-
-        request,
-
-        'relatorios/feed_relatorios.html',
-
-        {
-            'relatorios': relatorios,
-            'busca': busca
-        }
-
-    )
-
-from django.shortcuts import ( # type: ignore
-    render,
-    redirect,
-    get_object_or_404
-)
-
-from django.contrib.auth.decorators import login_required # type: ignore
-from django.db.models import Q, Avg # type: ignore
-
-from funcionarios.models import Funcionario
-
-from .models import (
-    Relatorio,
-    Comentario,
-    Avaliacao,
-    Curtida
+    Curtida,
+    HistoricoRelatorio
 )
 
 from .forms import (
@@ -255,6 +76,7 @@ def criar_relatorio(request):
         }
     )
 
+
 @login_required
 def feed_relatorios(request):
 
@@ -274,6 +96,15 @@ def feed_relatorios(request):
 
         palavras = busca.split()
 
+        sinonimos = {
+
+            'nota': ['nf', 'nfe', 'nota fiscal'],
+            'erro': ['falha', 'problema'],
+            'login': ['acesso', 'senha'],
+            'certificado': ['a1', 'a3', 'token']
+
+        }
+
         consulta = Q()
 
         relevancia = Value(
@@ -283,67 +114,83 @@ def feed_relatorios(request):
 
         for palavra in palavras:
 
-            consulta |= Q(
-                titulo__icontains=palavra
-            )
+            termos = [palavra]
 
-            consulta |= Q(
-                categoria__icontains=palavra
-            )
+            if palavra.lower() in sinonimos:
 
-            consulta |= Q(
-                problema__icontains=palavra
-            )
+                termos.extend(
+                    sinonimos[
+                        palavra.lower()
+                    ]
+                )
 
-            consulta |= Q(
-                solucao__icontains=palavra
-            )
+            for termo in termos:
 
-            consulta |= Q(
-                palavras_chave__icontains=palavra
-            )
+                consulta |= Q(
+                    titulo__icontains=termo
+                )
 
-            consulta |= Q(
-                tags__nome__icontains=palavra
-            )
+                consulta |= Q(
+                    categoria__icontains=termo
+                )
 
-            relevancia += Case(
+                consulta |= Q(
+                    problema__icontains=termo
+                )
 
-                When(
-                    titulo__icontains=palavra,
-                    then=Value(5)
-                ),
+                consulta |= Q(
+                    solucao__icontains=termo
+                )
 
-                When(
-                    tags__nome__icontains=palavra,
-                    then=Value(4)
-                ),
+                consulta |= Q(
+                    palavras_chave__icontains=termo
+                )
 
-                When(
-                    palavras_chave__icontains=palavra,
-                    then=Value(4)
-                ),
+                consulta |= Q(
+                    tags__nome__icontains=termo
+                )
 
-                When(
-                    categoria__icontains=palavra,
-                    then=Value(3)
-                ),
+                consulta |= Q(
+                    autor__usuario__first_name__icontains=termo
+                )
 
-                When(
-                    problema__icontains=palavra,
-                    then=Value(2)
-                ),
+                relevancia += Case(
 
-                When(
-                    solucao__icontains=palavra,
-                    then=Value(1)
-                ),
+                    When(
+                        titulo__icontains=termo,
+                        then=Value(5)
+                    ),
 
-                default=Value(0),
+                    When(
+                        tags__nome__icontains=termo,
+                        then=Value(4)
+                    ),
 
-                output_field=IntegerField()
+                    When(
+                        palavras_chave__icontains=termo,
+                        then=Value(4)
+                    ),
 
-            )
+                    When(
+                        categoria__icontains=termo,
+                        then=Value(3)
+                    ),
+
+                    When(
+                        problema__icontains=termo,
+                        then=Value(2)
+                    ),
+
+                    When(
+                        solucao__icontains=termo,
+                        then=Value(1)
+                    ),
+
+                    default=Value(0),
+
+                    output_field=IntegerField()
+
+                )
 
         relatorios = (
 
@@ -373,19 +220,12 @@ def feed_relatorios(request):
         )
 
     return render(
-
         request,
-
         'relatorios/feed_relatorios.html',
-
         {
-
             'relatorios': relatorios,
-
             'busca': busca
-
         }
-
     )
 
 
@@ -393,21 +233,84 @@ def feed_relatorios(request):
 def detalhe_relatorio(request, relatorio_id):
 
     relatorio = get_object_or_404(
+
         Relatorio.objects.prefetch_related(
             'tags'
         ),
+
         id=relatorio_id
     )
 
-    relatorios_relacionados = Relatorio.objects.filter(
+    # RELATÓRIOS RELACIONADOS (IA fake)
 
-        tags__in=relatorio.tags.all()
+    score = Value(
+        0,
+        output_field=IntegerField()
+    )
 
-    ).exclude(
+    # peso das tags
 
-        id=relatorio.id
+    for tag in relatorio.tags.all():
 
-    ).distinct()[:5]
+        score += Case(
+
+            When(
+                tags=tag,
+                then=Value(5)
+            ),
+
+            default=Value(0),
+
+            output_field=IntegerField()
+        )
+
+    # peso da categoria
+
+    score += Case(
+
+        When(
+            categoria=relatorio.categoria,
+            then=Value(4)
+        ),
+
+        default=Value(0),
+
+        output_field=IntegerField()
+
+    )
+
+    relatorios_relacionados = (
+
+        Relatorio.objects
+
+        .exclude(
+            id=relatorio.id
+        )
+
+        .annotate(
+            similaridade=score
+        )
+
+        .filter(
+            similaridade__gt=0
+        )
+
+        .distinct()
+
+        .order_by(
+            '-similaridade',
+            '-criado_em'
+        )
+
+        [:5]
+
+    )
+
+    # HISTÓRICO
+
+    historicos = relatorio.historicos.all().order_by(
+        '-atualizado_em'
+    )
 
     funcionario = get_object_or_404(
         Funcionario,
@@ -422,9 +325,7 @@ def detalhe_relatorio(request, relatorio_id):
         Avg('nota')
     )
 
-    media_notas = media[
-        'nota__avg'
-    ]
+    media_notas = media['nota__avg']
 
     curtidas_uteis = relatorio.curtidas.filter(
         tipo='util'
@@ -439,6 +340,8 @@ def detalhe_relatorio(request, relatorio_id):
     avaliacao_form = AvaliacaoForm()
 
     if request.method == 'POST':
+
+        # COMENTÁRIO
 
         if 'comentar' in request.POST:
 
@@ -463,17 +366,15 @@ def detalhe_relatorio(request, relatorio_id):
                     relatorio.id
                 )
 
-        if 'avaliar' in request.POST:
+        # AVALIAÇÃO
+
+        elif 'avaliar' in request.POST:
 
             avaliacao_form = AvaliacaoForm(
                 request.POST
             )
 
             if avaliacao_form.is_valid():
-
-                nota = avaliacao_form.cleaned_data[
-                    'nota'
-                ]
 
                 Avaliacao.objects.update_or_create(
 
@@ -482,7 +383,11 @@ def detalhe_relatorio(request, relatorio_id):
                     relatorio=relatorio,
 
                     defaults={
-                        'nota': nota
+
+                        'nota': avaliacao_form.cleaned_data[
+                            'nota'
+                        ]
+
                     }
 
                 )
@@ -492,7 +397,9 @@ def detalhe_relatorio(request, relatorio_id):
                     relatorio.id
                 )
 
-        if 'curtir' in request.POST:
+        # CURTIDA
+
+        elif 'curtir' in request.POST:
 
             tipo = request.POST.get(
                 'tipo'
@@ -516,8 +423,11 @@ def detalhe_relatorio(request, relatorio_id):
             )
 
     return render(
+
         request,
+
         'relatorios/detalhe_relatorio.html',
+
         {
 
             'relatorio': relatorio,
@@ -534,10 +444,15 @@ def detalhe_relatorio(request, relatorio_id):
 
             'curtidas_nao_ajudou': curtidas_nao_ajudou,
 
-            'relatorios_relacionados': relatorios_relacionados
+            'relatorios_relacionados': relatorios_relacionados,
+
+            'historicos': historicos
 
         }
+
     )
+
+
 @login_required
 def assistente_ia(request):
 
@@ -575,29 +490,20 @@ def assistente_ia(request):
                 tags__nome__icontains=palavra
             )
 
-        resultados = Relatorio.objects.filter(
-
+        resposta = Relatorio.objects.filter(
             consulta
-
         ).distinct()[:5]
 
-        resposta = resultados
-
     return render(
-
         request,
-
         'relatorios/assistente_ia.html',
-
         {
-
             'resposta': resposta,
-
             'pergunta': pergunta
-
         }
-
     )
+
+
 @login_required
 def editar_relatorio(request, relatorio_id):
 
@@ -606,37 +512,67 @@ def editar_relatorio(request, relatorio_id):
         id=relatorio_id
     )
 
-    funcionario = Funcionario.objects.get(
+    funcionario = get_object_or_404(
+        Funcionario,
         usuario=request.user
     )
 
     if (
+
         relatorio.autor != funcionario
+
         and not request.user.is_superuser
+
     ):
 
         messages.error(
+
             request,
+
             'Você não possui permissão para editar este relatório.'
+
         )
 
-        return redirect('feed_relatorios')
+        return redirect(
+            'feed_relatorios'
+        )
 
     if request.method == 'POST':
 
         form = RelatorioForm(
+
             request.POST,
             request.FILES,
             instance=relatorio
+
         )
 
         if form.is_valid():
 
+            HistoricoRelatorio.objects.create(
+
+                relatorio=relatorio,
+
+                editor=funcionario,
+
+                titulo=relatorio.titulo,
+
+                problema=relatorio.problema,
+
+                solucao=relatorio.solucao,
+
+                observacoes=relatorio.observacoes
+
+            )
+
             form.save()
 
             messages.success(
+
                 request,
+
                 'Relatório atualizado com sucesso.'
+
             )
 
             return redirect(
@@ -666,11 +602,16 @@ def excluir_relatorio(request, relatorio_id):
     if not request.user.is_superuser:
 
         messages.error(
+
             request,
+
             'Somente administradores podem excluir relatórios.'
+
         )
 
-        return redirect('feed_relatorios')
+        return redirect(
+            'feed_relatorios'
+        )
 
     relatorio = get_object_or_404(
         Relatorio,
@@ -686,7 +627,9 @@ def excluir_relatorio(request, relatorio_id):
             'Relatório removido.'
         )
 
-        return redirect('feed_relatorios')
+        return redirect(
+            'feed_relatorios'
+        )
 
     return render(
         request,
