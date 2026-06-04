@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="mb-5">
+
+        <h1 class="fw-bold">
+
+            <i class="bi bi-speedometer2"></i>
+
+            Dashboard Corporativo
+
+        </h1>
+
+        <p class="text-muted">
+
+            Visão geral do NexusHub
+
+        </p>
+
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-body text-center">
+
+                    <h2 class="fw-bold text-primary">
+
+                        {{ total_funcionarios }}
+
+                    </h2>
+
+                    <p class="mb-0">
+
+                        Funcionários
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-body text-center">
+
+                    <h2 class="fw-bold text-success">
+
+                        {{ total_setores }}
+
+                    </h2>
+
+                    <p class="mb-0">
+
+                        Setores
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-body text-center">
+
+                    <h2 class="fw-bold text-warning">
+
+                        {{ total_relatorios }}
+
+                    </h2>
+
+                    <p class="mb-0">
+
+                        Relatórios
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-body text-center">
+
+                    <h2 class="fw-bold text-danger">
+
+                        {{ total_favoritos }}
+
+                    </h2>
+
+                    <p class="mb-0">
+
+                        Favoritos
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 mt-5">
+
+        <div class="card-body">
+
+            <h4 class="fw-bold mb-4">
+
+                Últimos Relatórios
+
+            </h4>
+
+            {% for relatorio in ultimos_relatorios %}
+
+                <a href="{% url 'detalhe_relatorio' relatorio.id %}"
+                   class="text-decoration-none">
+
+                    <div class="border rounded-4 p-3 mb-3">
+
+                        <h6 class="text-dark fw-bold">
+
+                            {{ relatorio.titulo }}
+
+                        </h6>
+
+                        <small class="text-muted">
+
+                            {{ relatorio.categoria }}
+
+                        </small>
+
+                    </div>
+
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h1 class="fw-bold mb-5">
+
+        ⭐ Meus Favoritos
+
+    </h1>
+
+    {% for favorito in favoritos %}
+
+    <div class="card shadow-sm rounded-4 mb-4">
+
+        <div class="card-body">
+
+            <a href="{% url 'detalhe_relatorio' favorito.relatorio.id %}"
+               class="text-decoration-none">
+
+                <h4 class="text-dark">
+
+                    {{ favorito.relatorio.titulo }}
+
+                </h4>
+
+            </a>
+
+            <p class="text-muted">
+
+                {{ favorito.relatorio.categoria }}
+
+            </p>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div class="alert alert-secondary">
+
+        Nenhum favorito salvo.
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

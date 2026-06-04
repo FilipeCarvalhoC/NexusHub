@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'setores',
     'funcionarios',
     'relatorios',
+    'dashboard',
 ]
 
 MIDDLEWARE = [

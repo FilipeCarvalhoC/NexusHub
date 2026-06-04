@@ -23,7 +23,8 @@ from .models import (
     Comentario,
     Avaliacao,
     Curtida,
-    HistoricoRelatorio
+    HistoricoRelatorio,
+    Favorito
 )
 
 from .forms import (
@@ -317,6 +318,11 @@ def detalhe_relatorio(request, relatorio_id):
         usuario=request.user
     )
 
+    favoritado = Favorito.objects.filter(
+        usuario=funcionario,
+        relatorio=relatorio
+    ).exists()
+
     comentarios = relatorio.comentarios.all().order_by(
         '-criado_em'
     )
@@ -340,6 +346,25 @@ def detalhe_relatorio(request, relatorio_id):
     avaliacao_form = AvaliacaoForm()
 
     if request.method == 'POST':
+
+        if 'favoritar' in request.POST:
+
+            favorito, criado = Favorito.objects.get_or_create(
+
+                usuario=funcionario,
+
+                relatorio=relatorio
+
+            )
+
+            if not criado:
+
+                favorito.delete()
+
+            return redirect(
+                'detalhe_relatorio',
+                relatorio.id
+            )
 
         # COMENTÁRIO
 
@@ -446,7 +471,9 @@ def detalhe_relatorio(request, relatorio_id):
 
             'relatorios_relacionados': relatorios_relacionados,
 
-            'historicos': historicos
+            'historicos': historicos,
+
+            'favoritado': favoritado,
 
         }
 
@@ -637,4 +664,34 @@ def excluir_relatorio(request, relatorio_id):
         {
             'relatorio': relatorio
         }
+    )
+
+@login_required
+def meus_favoritos(request):
+
+    funcionario = get_object_or_404(
+        Funcionario,
+        usuario=request.user
+    )
+
+    favoritos = Favorito.objects.filter(
+
+        usuario=funcionario
+
+    ).select_related(
+        'relatorio'
+    ).order_by(
+        '-criado_em'
+    )
+
+    return render(
+
+        request,
+
+        'relatorios/favoritos.html',
+
+        {
+            'favoritos': favoritos
+        }
+
     )

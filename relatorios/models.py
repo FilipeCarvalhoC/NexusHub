@@ -223,3 +223,28 @@ class HistoricoRelatorio(models.Model):
     def __str__(self):
 
         return f'{self.relatorio.titulo} - {self.atualizado_em}'
+    
+class Favorito(models.Model):
+
+    usuario = models.ForeignKey(
+        'funcionarios.Funcionario',
+        on_delete=models.CASCADE,
+        related_name='favoritos'
+    )
+
+    relatorio = models.ForeignKey(
+        Relatorio,
+        on_delete=models.CASCADE,
+        related_name='salvos'
+    )
+
+    criado_em = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+
+        unique_together = (
+            'usuario',
+            'relatorio'
+        )

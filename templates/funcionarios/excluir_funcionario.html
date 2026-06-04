@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="card shadow border-0 rounded-4">
+
+        <div class="card-body p-5 text-center">
+
+            <h2 class="text-danger mb-4">
+
+                Excluir Funcionário
+
+            </h2>
+
+            <p>
+
+                Tem certeza que deseja excluir:
+
+            </p>
+
+            <h4>
+
+                {{ funcionario.usuario.get_full_name }}
+
+            </h4>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn btn-danger rounded-pill">
+
+                    Sim, excluir
+
+                </button>
+
+                <a
+                    href="{% url 'organograma' %}"
+                    class="btn btn-secondary rounded-pill">
+
+                    Cancelar
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
