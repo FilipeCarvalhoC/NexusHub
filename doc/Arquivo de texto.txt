@@ -52,3 +52,16 @@ git add .
 git commit -m 'mensagem'
 
 git push
+
+
+
+comandos python Windows
+
+1 - criar ambiente virtual
+>> py -m venv venv
+
+2 - ativar ambiente virtual (Windows)
+>> .\venv\Scripts\Activate.ps1
+
+3 - rodar o servidor
+>> py manage.py runserver

@@ -6,7 +6,9 @@ from .views import (
     editar_funcionario,
     excluir_funcionario,
     organograma,
-    editar_meu_perfil
+    editar_meu_perfil,
+    funcionarios_inativos,
+    reativar_funcionario
 )
 
 urlpatterns = [
@@ -45,5 +47,15 @@ urlpatterns = [
         'funcionarios/excluir/<int:funcionario_id>/',
         excluir_funcionario,
         name='excluir_funcionario'
+    ),
+    path(
+        'inativos/',
+        funcionarios_inativos,
+        name='funcionarios_inativos'
+    ),
+    path(
+        'funcionarios/reativar/<int:funcionario_id>/',
+        reativar_funcionario,
+        name='reativar_funcionario'
     ),
 ]

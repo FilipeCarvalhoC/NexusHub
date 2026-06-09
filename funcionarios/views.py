@@ -3,12 +3,17 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
-from .forms import FuncionarioCadastroForm
+from .forms import FuncionarioCadastroForm, MeuPerfilForm
 from .models import Funcionario
 from .utils import (
     is_administrador,
     is_rh,
     is_gestor
+)
+from relatorios.models import (
+    Relatorio,
+    Favorito,
+    Comentario
 )
 
 
@@ -20,12 +25,42 @@ def perfil(request):
         usuario=request.user
     )
 
+    relatorios = Relatorio.objects.filter(
+        autor=funcionario
+    ).order_by(
+        '-criado_em'
+    )[:5]
+
+    total_relatorios = Relatorio.objects.filter(
+        autor=funcionario
+    ).count()
+
+    total_favoritos = Favorito.objects.filter(
+        usuario=funcionario
+    ).count()
+
+    total_comentarios = Comentario.objects.filter(
+        autor=funcionario
+    ).count()
+
+    context = {
+
+        'funcionario': funcionario,
+
+        'relatorios': relatorios,
+
+        'total_relatorios': total_relatorios,
+
+        'total_favoritos': total_favoritos,
+
+        'total_comentarios': total_comentarios,
+
+    }
+
     return render(
         request,
         'funcionarios/perfil.html',
-        {
-            'funcionario': funcionario
-        }
+        context
     )
 
 
@@ -172,7 +207,9 @@ def excluir_funcionario(request, funcionario_id):
 
     if request.method == 'POST':
 
-        funcionario.usuario.delete()
+        funcionario.ativo = False
+
+        funcionario.save()
 
         return redirect('home')
 
@@ -192,7 +229,9 @@ def organograma(request):
         'usuario',
         'setor',
         'superior'
-    ).all()
+    ).filter(
+        ativo=True
+    )
 
     lideres = funcionarios.filter(
         superior__isnull=True
@@ -218,7 +257,7 @@ def editar_meu_perfil(request):
 
     if request.method == 'POST':
 
-        form = FuncionarioCadastroForm(
+        form = MeuPerfilForm(
             request.POST,
             request.FILES,
             instance=funcionario
@@ -226,37 +265,35 @@ def editar_meu_perfil(request):
 
         if form.is_valid():
 
-            funcionario = form.save(commit=False)
+            funcionario = form.save(
+                commit=False
+            )
 
             usuario = funcionario.usuario
 
-            usuario.first_name = form.cleaned_data['first_name']
+            usuario.first_name = form.cleaned_data[
+                'first_name'
+            ]
 
-            usuario.last_name = form.cleaned_data['last_name']
+            usuario.last_name = form.cleaned_data[
+                'last_name'
+            ]
 
-            usuario.email = form.cleaned_data['email']
-
-            usuario.username = form.cleaned_data['username']
-
-            if form.cleaned_data['password']:
-
-                usuario.set_password(
-                    form.cleaned_data['password']
-                )
+            usuario.email = form.cleaned_data[
+                'email'
+            ]
 
             usuario.save()
 
             funcionario.save()
 
-            return redirect('perfil')
-
-        else:
-
-            print(form.errors)
+            return redirect(
+                'perfil'
+            )
 
     else:
 
-        form = FuncionarioCadastroForm(
+        form = MeuPerfilForm(
             instance=funcionario
         )
 
@@ -265,6 +302,74 @@ def editar_meu_perfil(request):
         'funcionarios/editar_meu_perfil.html',
         {
             'form': form,
+            'funcionario': funcionario
+        }
+    )
+
+@login_required
+def funcionarios_inativos(request):
+
+    funcionarios = Funcionario.objects.filter(
+        ativo=False
+    ).select_related(
+        'usuario',
+        'setor'
+    )
+
+    return render(
+        request,
+        'funcionarios/funcionarios_inativos.html',
+        {
+            'funcionarios': funcionarios
+        }
+    )
+
+@login_required
+def reativar_funcionario(
+    request,
+    funcionario_id
+):
+
+    funcionario = get_object_or_404(
+        Funcionario,
+        id=funcionario_id
+    )
+
+    funcionario.ativo = True
+
+    funcionario.save()
+
+    return redirect(
+        'funcionarios_inativos'
+    )
+@login_required
+def reativar_funcionario(request, funcionario_id):
+
+    if not (
+        request.user.is_superuser
+        or is_rh(request.user)
+        or is_administrador(request.user)
+    ):
+        return redirect('home')
+
+    funcionario = get_object_or_404(
+        Funcionario,
+        id=funcionario_id
+    )
+
+    if request.method == 'POST':
+
+        funcionario.ativo = True
+        funcionario.save()
+
+        return redirect(
+            'funcionarios_inativos'
+        )
+
+    return render(
+        request,
+        'funcionarios/reativar_funcionario.html',
+        {
             'funcionario': funcionario
         }
     )

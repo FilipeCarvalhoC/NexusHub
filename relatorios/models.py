@@ -23,7 +23,9 @@ class Relatorio(models.Model):
 
     autor = models.ForeignKey(
         Funcionario,
-        on_delete=models.CASCADE
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
 
     titulo = models.CharField(

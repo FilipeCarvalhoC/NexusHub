@@ -4,77 +4,103 @@
 
 <div class="container py-5">
 
-    <div class="mb-5">
+    <!-- BOTÃO VOLTAR -->
 
-        <a href="/" class="btn btn-outline-primary mb-3">
-            ← Voltar
+    <div class="mb-4">
+
+        <a href="{% url 'home' %}"
+           class="btn btn-outline-primary rounded-pill">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Voltar
+
         </a>
-
-        <h1 class="fw-bold">
-            {{ setor.nome }}
-        </h1>
-
-        <p class="text-muted">
-            {{ setor.descricao }}
-        </p>
 
     </div>
 
     <div class="row justify-content-center">
 
-        <div class="col-md-8">
+        <div class="col-lg-8">
 
-            <div class="card border-0 shadow rounded-4">
+            <div class="card border-0 shadow-lg rounded-4">
 
                 <div class="card-body p-5">
 
+                    <!-- CABEÇALHO -->
+
                     <div class="text-center mb-5">
 
-                        <i class="bi bi-pencil-square"
-                           style="font-size: 60px; color: #0d6efd;">
-                        </i>
+                        {% if funcionario.foto %}
 
-                        <h2 class="fw-bold mt-3">
+                            <img src="{{ funcionario.foto.url }}"
+                                 class="rounded-circle shadow-sm border"
+                                 width="130"
+                                 height="130"
+                                 style="object-fit: cover;">
+
+                        {% else %}
+
+                            <i class="bi bi-person-circle text-primary"
+                               style="font-size: 120px;"></i>
+
+                        {% endif %}
+
+                        <h2 class="fw-bold mt-4">
+
                             Editar Funcionário
+
                         </h2>
 
                         <p class="text-muted">
+
                             Atualize as informações do colaborador
+
                         </p>
 
                     </div>
+
+                    <!-- ERROS -->
+
+                    {% if form.errors %}
+
+                    <div class="alert alert-danger rounded-4 mb-4">
+
+                        <strong>
+
+                            Corrija os erros abaixo:
+
+                        </strong>
+
+                        {{ form.errors }}
+
+                    </div>
+
+                    {% endif %}
+
+                    <!-- FORMULÁRIO -->
 
                     <form method="POST"
                           enctype="multipart/form-data">
 
                         {% csrf_token %}
 
-                        <div class="text-center mb-4">
+                        <!-- DADOS PESSOAIS -->
 
-                            {% if funcionario.foto %}
+                        <h5 class="fw-bold mb-3">
 
-                            <img src="{{ funcionario.foto.url }}"
-                                 class="rounded-circle shadow"
-                                 width="120"
-                                 height="120"
-                                 style="object-fit: cover;">
+                            Dados Pessoais
 
-                            {% else %}
-
-                            <i class="bi bi-person-circle"
-                               style="font-size: 100px; color: #0d6efd;">
-                            </i>
-
-                            {% endif %}
-
-                        </div>
+                        </h5>
 
                         <div class="row">
 
                             <div class="col-md-6 mb-3">
 
-                                <label class="form-label">
+                                <label class="form-label fw-semibold">
+
                                     Nome
+
                                 </label>
 
                                 {{ form.first_name }}
@@ -83,8 +109,10 @@
 
                             <div class="col-md-6 mb-3">
 
-                                <label class="form-label">
+                                <label class="form-label fw-semibold">
+
                                     Sobrenome
+
                                 </label>
 
                                 {{ form.last_name }}
@@ -97,8 +125,10 @@
 
                             <div class="col-md-6 mb-3">
 
-                                <label class="form-label">
+                                <label class="form-label fw-semibold">
+
                                     Usuário
+
                                 </label>
 
                                 {{ form.username }}
@@ -107,8 +137,10 @@
 
                             <div class="col-md-6 mb-3">
 
-                                <label class="form-label">
-                                    Email
+                                <label class="form-label fw-semibold">
+
+                                    E-mail
+
                                 </label>
 
                                 {{ form.email }}
@@ -117,10 +149,62 @@
 
                         </div>
 
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Telefone
+
+                                </label>
+
+                                {{ form.telefone }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Data de Nascimento
+
+                                </label>
+
+                                {{ form.data_nascimento }}
+
+                            </div>
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+
+                                Foto
+
+                            </label>
+
+                            {{ form.foto }}
+
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- DADOS CORPORATIVOS -->
+
+                        <h5 class="fw-bold mb-3">
+
+                            Dados Corporativos
+
+                        </h5>
+
                         <div class="mb-3">
 
-                            <label class="form-label">
+                            <label class="form-label fw-semibold">
+
                                 Cargo
+
                             </label>
 
                             {{ form.cargo }}
@@ -129,31 +213,13 @@
 
                         <div class="mb-3">
 
-                            <label class="form-label">
+                            <label class="form-label fw-semibold">
+
                                 Função
+
                             </label>
 
                             {{ form.funcao }}
-
-                        </div>
-
-                        <div class="mb-3">
-
-                            <label class="form-label">
-                                Telefone
-                            </label>
-
-                            {{ form.telefone }}
-
-                        </div>
-
-                        <div class="mb-3">
-
-                            <label class="form-label">
-                                Foto
-                            </label>
-
-                            {{ form.foto }}
 
                         </div>
 
@@ -161,8 +227,10 @@
 
                             <div class="col-md-6 mb-3">
 
-                                <label class="form-label">
+                                <label class="form-label fw-semibold">
+
                                     Setor
+
                                 </label>
 
                                 {{ form.setor }}
@@ -171,8 +239,10 @@
 
                             <div class="col-md-6 mb-3">
 
-                                <label class="form-label">
+                                <label class="form-label fw-semibold">
+
                                     Superior
+
                                 </label>
 
                                 {{ form.superior }}
@@ -181,8 +251,46 @@
 
                         </div>
 
+                        {% if user.is_superuser %}
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+
+                                Grupo / Permissão
+
+                            </label>
+
+                            {{ form.grupo }}
+
+                        </div>
+
+                        {% endif %}
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+
+                                Nova Senha
+
+                            </label>
+
+                            {{ form.password }}
+
+                            <small class="text-muted">
+
+                                Deixe em branco para manter a senha atual.
+
+                            </small>
+
+                        </div>
+
+                        <!-- BOTÃO -->
+
                         <button type="submit"
-                                class="btn btn-primary w-100 btn-lg rounded-pill mt-3">
+                                class="btn btn-primary btn-lg w-100 rounded-pill">
+
+                            <i class="bi bi-check-circle-fill me-2"></i>
 
                             Salvar Alterações
 

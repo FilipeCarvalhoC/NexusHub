@@ -55,7 +55,8 @@ def detalhe_setor(request, setor_id):
     setor = get_object_or_404(Setor, id=setor_id)
 
     funcionarios = Funcionario.objects.filter(
-        setor=setor
+        setor=setor,
+        ativo=True
     )
 
     return render(request, 'setores/detalhe_setor.html', {

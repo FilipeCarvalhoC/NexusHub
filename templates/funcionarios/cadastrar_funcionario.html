@@ -4,64 +4,106 @@
 
 <div class="container py-5">
 
-    <div class="mb-5">
+    <div class="mb-4">
 
-        <a href="/" class="btn btn-outline-primary mb-3">
-            ← Voltar
+        <a href="/"
+           class="btn btn-outline-primary rounded-pill">
+
+            <i class="bi bi-arrow-left me-2"></i>
+
+            Voltar
+
         </a>
-
-        <h1 class="fw-bold">
-            {{ setor.nome }}
-        </h1>
-
-        <p class="text-muted">
-            {{ setor.descricao }}
-        </p>
 
     </div>
 
     <div class="row justify-content-center">
 
-        <div class="col-md-8">
+        <div class="col-lg-8">
 
-            <div class="card border-0 shadow rounded-4">
+            <div class="card border-0 shadow-lg rounded-4">
 
                 <div class="card-body p-5">
 
+                    <!-- CABEÇALHO -->
+
                     <div class="text-center mb-5">
 
-                        <i class="bi bi-person-plus-fill"
-                           style="font-size: 60px; color: #0d6efd;">
+                        <i class="bi bi-person-plus-fill text-primary"
+                           style="font-size: 70px;">
                         </i>
 
                         <h2 class="fw-bold mt-3">
+
                             Cadastro de Funcionário
+
                         </h2>
 
                         <p class="text-muted">
-                            Criar usuário e funcionário
+
+                            Crie um novo colaborador no NexusHub
+
                         </p>
 
                     </div>
 
-                    <form method="POST" enctype="multipart/form-data">
+                    <!-- ERROS -->
+
+                    {% if form.errors %}
+
+                    <div class="alert alert-danger rounded-4">
+
+                        <strong>
+
+                            Corrija os erros abaixo:
+
+                        </strong>
+
+                        {{ form.errors }}
+
+                    </div>
+
+                    {% endif %}
+
+                    <form method="POST"
+                          enctype="multipart/form-data">
 
                         {% csrf_token %}
 
+                        <!-- DADOS PESSOAIS -->
+
+                        <h5 class="fw-bold mb-3">
+
+                            <i class="bi bi-person-fill me-2"></i>
+
+                            Dados Pessoais
+
+                        </h5>
+
                         <div class="row">
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">
+
+                                <label class="form-label fw-semibold">
+
                                     Nome
+
                                 </label>
+
                                 {{ form.first_name }}
+
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">
+
+                                <label class="form-label fw-semibold">
+
                                     Sobrenome
+
                                 </label>
+
                                 {{ form.last_name }}
+
                             </div>
 
                         </div>
@@ -69,76 +111,173 @@
                         <div class="row">
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">
+
+                                <label class="form-label fw-semibold">
+
                                     Usuário
+
                                 </label>
+
                                 {{ form.username }}
+
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">
-                                    Email
+
+                                <label class="form-label fw-semibold">
+
+                                    E-mail
+
                                 </label>
+
                                 {{ form.email }}
+
                             </div>
 
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+
                                 Senha
+
                             </label>
+
                             {{ form.password }}
+
                         </div>
 
+                        <hr>
+
+                        <!-- DADOS PROFISSIONAIS -->
+
+                        <h5 class="fw-bold mb-3 mt-4">
+
+                            <i class="bi bi-briefcase-fill me-2"></i>
+
+                            Dados Profissionais
+
+                        </h5>
+
                         <div class="mb-3">
-                            <label class="form-label">
+
+                            <label class="form-label fw-semibold">
+
                                 Cargo
+
                             </label>
+
                             {{ form.cargo }}
+
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">
+
+                            <label class="form-label fw-semibold">
+
                                 Função
+
                             </label>
+
                             {{ form.funcao }}
+
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">
+
+                            <label class="form-label fw-semibold">
+
                                 Telefone
+
                             </label>
+
                             {{ form.telefone }}
+
                         </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Data de Nascimento
+
+                            </label>
+
+                            {{ form.data_nascimento }}
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+
+                                Foto do Funcionário
+
+                            </label>
+
+                            {{ form.foto }}
+
+                        </div>
+
+                        <hr>
+
+                        <!-- ESTRUTURA ORGANIZACIONAL -->
+
+                        <h5 class="fw-bold mb-3 mt-4">
+
+                            <i class="bi bi-diagram-3-fill me-2"></i>
+
+                            Estrutura Organizacional
+
+                        </h5>
 
                         <div class="row">
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">
+
+                                <label class="form-label fw-semibold">
+
                                     Setor
+
                                 </label>
+
                                 {{ form.setor }}
+
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">
-                                    Permissão do Usuário
-                                </label>
-                                {{ form.grupo }}
-                            </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">
+                                <label class="form-label fw-semibold">
+
                                     Superior
+
                                 </label>
+
                                 {{ form.superior }}
+
                             </div>
 
                         </div>
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+
+                                Grupo de Permissão
+
+                            </label>
+
+                            {{ form.grupo }}
+
+                        </div>
+
+                        <!-- BOTÃO -->
 
                         <button type="submit"
-                                class="btn btn-primary w-100 btn-lg rounded-pill mt-3">
+                                class="btn btn-primary btn-lg w-100 rounded-pill">
+
+                            <i class="bi bi-person-check-fill me-2"></i>
 
                             Cadastrar Funcionário
 

@@ -4,52 +4,105 @@
 
 <div class="container py-5">
 
+    <!-- BOTÃO VOLTAR -->
+
+    <div class="mb-4">
+
+        <a href="{% url 'perfil' %}"
+           class="btn btn-outline-primary rounded-pill">
+
+            <i class="bi bi-arrow-left me-2"></i>
+
+            Voltar ao Perfil
+
+        </a>
+
+    </div>
+
     <div class="row justify-content-center">
 
-        <div class="col-md-8">
+        <div class="col-lg-8">
 
-            <div class="card border-0 shadow rounded-4">
+            <div class="card border-0 shadow-lg rounded-4">
 
                 <div class="card-body p-5">
+
+                    <!-- CABEÇALHO -->
 
                     <div class="text-center mb-5">
 
                         {% if funcionario.foto %}
 
-                        <img src="{{ funcionario.foto.url }}"
-                             class="rounded-circle shadow"
-                             width="130"
-                             height="130"
-                             style="object-fit: cover;">
+                            <img src="{{ funcionario.foto.url }}"
+                                 class="rounded-circle shadow border border-3"
+                                 width="150"
+                                 height="150"
+                                 style="object-fit: cover;">
 
                         {% else %}
 
-                        <i class="bi bi-person-circle"
-                           style="font-size: 120px; color: #0d6efd;">
-                        </i>
+                            <i class="bi bi-person-circle text-primary"
+                               style="font-size: 140px;"></i>
 
                         {% endif %}
 
                         <h2 class="fw-bold mt-4">
+
                             Editar Meu Perfil
+
                         </h2>
 
                         <p class="text-muted">
-                            Atualize suas informações pessoais
+
+                            Mantenha suas informações atualizadas.
+
                         </p>
 
                     </div>
 
-                    <form method="POST" enctype="multipart/form-data">
+                    <!-- MENSAGENS DE ERRO -->
+
+                    {% if form.errors %}
+
+                    <div class="alert alert-danger rounded-4 mb-4">
+
+                        <strong>
+
+                            Foram encontrados erros no formulário:
+
+                        </strong>
+
+                        {{ form.errors }}
+
+                    </div>
+
+                    {% endif %}
+
+                    <!-- FORMULÁRIO -->
+
+                    <form method="POST"
+                          enctype="multipart/form-data">
 
                         {% csrf_token %}
+
+                        <!-- DADOS PESSOAIS -->
+
+                        <h5 class="fw-bold mb-3">
+
+                            <i class="bi bi-person-fill me-2"></i>
+
+                            Dados Pessoais
+
+                        </h5>
 
                         <div class="row">
 
                             <div class="col-md-6 mb-3">
 
-                                <label class="form-label">
+                                <label class="form-label fw-semibold">
+
                                     Nome
+
                                 </label>
 
                                 {{ form.first_name }}
@@ -58,8 +111,10 @@
 
                             <div class="col-md-6 mb-3">
 
-                                <label class="form-label">
+                                <label class="form-label fw-semibold">
+
                                     Sobrenome
+
                                 </label>
 
                                 {{ form.last_name }}
@@ -70,8 +125,10 @@
 
                         <div class="mb-3">
 
-                            <label class="form-label">
-                                Email
+                            <label class="form-label fw-semibold">
+
+                                E-mail
+
                             </label>
 
                             {{ form.email }}
@@ -80,26 +137,58 @@
 
                         <div class="mb-3">
 
-                            <label class="form-label">
+                            <label class="form-label fw-semibold">
+
                                 Telefone
+
                             </label>
 
                             {{ form.telefone }}
 
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-4">
 
-                            <label class="form-label">
-                                Foto
+                            <label class="form-label fw-semibold">
+
+                                Data de Nascimento
+
+                            </label>
+
+                            {{ form.data_nascimento }}
+
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- FOTO -->
+
+                        <h5 class="fw-bold mb-3">
+
+                            <i class="bi bi-camera-fill me-2"></i>
+
+                            Foto de Perfil
+
+                        </h5>
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+
+                                Selecionar Nova Foto
+
                             </label>
 
                             {{ form.foto }}
 
                         </div>
 
+                        <!-- BOTÃO -->
+
                         <button type="submit"
-                                class="btn btn-primary w-100 btn-lg rounded-pill mt-3">
+                                class="btn btn-primary btn-lg w-100 rounded-pill">
+
+                            <i class="bi bi-check-circle-fill me-2"></i>
 
                             Salvar Alterações
 
@@ -117,4 +206,4 @@
 
 </div>
 
-{% endblock %}
+{% endblock %}  

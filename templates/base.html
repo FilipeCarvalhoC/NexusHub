@@ -436,6 +436,21 @@
 
             {% endif %}
 
+            {% if user.is_superuser or user.groups.all.0.name == 'RH' %}
+
+            <li>
+                <a class="dropdown-item rounded-3 py-2"
+                href="{% url 'funcionarios_inativos' %}">
+
+                    <i class="bi bi-person-x-fill me-2 text-danger"></i>
+
+                    Funcionários Inativos
+
+                </a>
+            </li>
+
+            {% endif %}
+
         </ul>
 
     </div>

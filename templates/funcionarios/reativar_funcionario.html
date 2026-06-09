@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="card shadow border-0 rounded-4">
+
+        <div class="card-body p-5 text-center">
+
+            <h2 class="text-success mb-4">
+
+                Reativar Funcionário
+
+            </h2>
+
+            <p>
+
+                Deseja reativar o funcionário:
+
+            </p>
+
+            <h4>
+
+                {{ funcionario.usuario.get_full_name }}
+
+            </h4>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn btn-success rounded-pill">
+
+                    Sim, Reativar
+
+                </button>
+
+                <a
+                    href="{% url 'funcionarios_inativos' %}"
+                    class="btn btn-secondary rounded-pill">
+
+                    Cancelar
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

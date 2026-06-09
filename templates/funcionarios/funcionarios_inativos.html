@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="mb-5">
+
+        <a href="{% url 'home' %}"
+           class="btn btn-outline-primary rounded-pill">
+
+            ← Voltar
+
+        </a>
+
+    </div>
+
+    <div class="text-center mb-5">
+
+        <i class="bi bi-person-x-fill text-danger"
+           style="font-size: 70px;">
+        </i>
+
+        <h1 class="fw-bold mt-3">
+
+            Funcionários Inativos
+
+        </h1>
+
+        <p class="text-muted">
+
+            Colaboradores que não fazem mais parte da empresa,
+            mas permanecem registrados para fins históricos.
+
+        </p>
+
+    </div>
+
+    <div class="row g-4">
+
+        {% for funcionario in funcionarios %}
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between mb-3">
+
+                        <span class="badge bg-danger rounded-pill">
+
+                            Inativo
+
+                        </span>
+
+                    </div>
+
+                    <div class="text-center">
+
+                        {% if funcionario.foto %}
+
+                            <img src="{{ funcionario.foto.url }}"
+                                 class="rounded-circle shadow-sm mb-3"
+                                 width="120"
+                                 height="120"
+                                 style="object-fit: cover;">
+
+                        {% else %}
+
+                            <i class="bi bi-person-circle"
+                               style="font-size: 90px; color: #6c757d;">
+                            </i>
+
+                        {% endif %}
+
+                        <h4 class="fw-bold mt-3">
+
+                            {{ funcionario.usuario.get_full_name }}
+
+                        </h4>
+
+                        <p class="text-muted">
+
+                            {{ funcionario.cargo }}
+
+                        </p>
+
+                    </div>
+
+                    <hr>
+
+                    <p>
+
+                        <strong>Setor:</strong><br>
+
+                        {{ funcionario.setor.nome }}
+
+                    </p>
+
+                    <p>
+
+                        <strong>Função:</strong><br>
+
+                        {{ funcionario.funcao }}
+
+                    </p>
+
+                    <p>
+
+                        <strong>Email:</strong><br>
+
+                        {{ funcionario.usuario.email }}
+
+                    </p>
+
+                    <p>
+
+                        <strong>Telefone:</strong><br>
+
+                        {{ funcionario.telefone|default:"Não informado" }}
+
+                    </p>
+
+                    {% if funcionario.superior %}
+
+                    <p>
+
+                        <strong>Último Superior:</strong><br>
+
+                        {{ funcionario.superior.usuario.get_full_name }}
+
+                    </p>
+
+                    {% endif %}
+
+                    <div class="d-grid mt-3">
+
+                        <a href="{% url 'reativar_funcionario' funcionario.id %}"
+                        class="btn btn-success rounded-pill">
+
+                            <i class="bi bi-arrow-clockwise me-2"></i>
+
+                            Reativar Funcionário
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="alert alert-success shadow-sm rounded-4 text-center">
+
+                <i class="bi bi-check-circle-fill me-2"></i>
+
+                Nenhum funcionário inativo registrado.
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

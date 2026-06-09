@@ -28,9 +28,21 @@
 
             <div class="text-center mb-4">
 
-                <i class="bi bi-person-workspace"
-                   style="font-size: 60px; color: #0d6efd;">
+                {% if lider.foto %}
+
+                <img src="{{ lider.foto.url }}"
+                    class="rounded-circle shadow"
+                    width="120"
+                    height="120"
+                    style="object-fit: cover;">
+
+                {% else %}
+
+                <i class="bi bi-person-circle"
+                style="font-size: 100px; color: #0d6efd;">
                 </i>
+
+                {% endif %}
 
                 <h3 class="fw-bold mt-3">
 

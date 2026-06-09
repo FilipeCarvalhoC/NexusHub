@@ -169,7 +169,15 @@
 
                     <h5 class="mb-1">
 
-                        {{ relatorio.autor.usuario.get_full_name }}
+                         {% if relatorio.autor %}
+
+                         {{ relatorio.autor.usuario.get_full_name }}
+
+                         {% else %}
+
+                         Funcionário Desligado
+
+                         {% endif %}
 
                     </h5>
 
