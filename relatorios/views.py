@@ -6,6 +6,9 @@ from django.shortcuts import (
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from .ia import perguntar_ia
+from .models import Relatorio
+from django.db.models import Q
 
 from django.db.models import (
     Q,
@@ -694,4 +697,100 @@ def meus_favoritos(request):
             'favoritos': favoritos
         }
 
+    )
+
+@login_required
+def assistente_ia(request):
+
+    resposta_ia = None
+    relatorios = []
+
+    pergunta = request.GET.get(
+        'pergunta'
+    )
+
+    if pergunta:
+
+        palavras = pergunta.split()
+
+        consulta = Q()
+
+        for palavra in palavras:
+
+            consulta |= Q(
+                titulo__icontains=palavra
+            )
+
+            consulta |= Q(
+                categoria__icontains=palavra
+            )
+
+            consulta |= Q(
+                problema__icontains=palavra
+            )
+
+            consulta |= Q(
+                solucao__icontains=palavra
+            )
+
+            consulta |= Q(
+                palavras_chave__icontains=palavra
+            )
+
+        relatorios = Relatorio.objects.filter(
+            consulta
+        ).distinct()[:5]
+
+        contexto = ""
+
+        for relatorio in relatorios:
+
+            contexto += f"""
+TÍTULO:
+{relatorio.titulo}
+
+CATEGORIA:
+{relatorio.categoria}
+
+PROBLEMA:
+{relatorio.problema}
+
+SOLUÇÃO:
+{relatorio.solucao}
+
+RESULTADO:
+{relatorio.resultado_final}
+
+PALAVRAS-CHAVE:
+{relatorio.palavras_chave}
+
+"""
+
+        if relatorios:
+
+            resposta_ia = perguntar_ia(
+                contexto,
+                pergunta
+            )
+
+            print("PERGUNTA:", pergunta)
+            print("CONTEXTO:", contexto[:500])
+            print("RESPOSTA IA:", resposta_ia)
+
+
+
+        else:
+
+            resposta_ia = (
+                "Não encontrei relatórios relacionados a essa pergunta."
+            )
+
+    return render(
+        request,
+        'relatorios/assistente_ia.html',
+        {
+            'pergunta': pergunta,
+            'resposta_ia': resposta_ia,
+            'relatorios_usados': relatorios
+        }
     )

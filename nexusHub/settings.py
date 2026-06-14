@@ -9,6 +9,11 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import os
+from dotenv import load_dotenv
+from decouple import config
+
+load_dotenv()
 
 from pathlib import Path
 
@@ -135,3 +140,5 @@ LOGOUT_REDIRECT_URL = '/login/'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
+
+GROQ_API_KEY = config('GROQ_API_KEY')

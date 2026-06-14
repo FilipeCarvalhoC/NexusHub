@@ -6,83 +6,73 @@
 
     <div class="text-center mb-5">
 
-        <h1 class="fw-bold">
+        <i class="bi bi-robot"
+           style="font-size:70px; color:#0d6efd;">
+        </i>
 
-            Assistente Inteligente
+        <h1 class="fw-bold mt-3">
+
+            Assistente Nexus IA
 
         </h1>
 
         <p class="text-muted">
 
-            Pergunte algo sobre processos internos.
+            Consulte a base de conhecimento da empresa
 
         </p>
 
     </div>
 
-    <form method="GET">
-
-        <div class="input-group mb-5">
-
-            <input
-                type="text"
-                name="pergunta"
-                class="form-control form-control-lg"
-
-                placeholder="Ex: Como resolver erro emissão de nota?"
-
-                value="{{ pergunta }}">
-
-            <button
-                class="btn btn-primary">
-
-                Perguntar
-
-            </button>
-
-        </div>
-
-    </form>
-
-    {% if resposta %}
-
     <div class="card shadow border-0 rounded-4">
 
         <div class="card-body p-4">
 
-            <h4 class="fw-bold mb-4">
+            <form method="GET">
 
-                Conhecimentos encontrados
+                <div class="input-group">
+
+                    <input
+                        type="text"
+                        name="pergunta"
+                        class="form-control form-control-lg"
+                        placeholder="Digite sua pergunta..."
+                        value="{{ pergunta|default:'' }}"
+                    >
+
+                    <button
+                        class="btn btn-primary"
+                        type="submit">
+
+                        Perguntar
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    {% if resposta_ia %}
+
+    <div class="card shadow border-0 rounded-4 mt-4">
+
+        <div class="card-body p-4">
+
+            <h4 class="fw-bold mb-3">
+
+                Resposta da IA
 
             </h4>
 
-            {% for item in resposta %}
+            <div class="alert alert-light border">
 
-            <div class="mb-4">
-
-                <h5>
-
-                    {{ item.titulo }}
-
-                </h5>
-
-                <p>
-
-                    {{ item.solucao|truncatechars:250 }}
-
-                </p>
-
-                <a href="{% url 'detalhe_relatorio' item.id %}">
-
-                    Abrir relatório
-
-                </a>
+                {{ resposta_ia|linebreaks }}
 
             </div>
-
-            <hr>
-
-            {% endfor %}
 
         </div>
 
